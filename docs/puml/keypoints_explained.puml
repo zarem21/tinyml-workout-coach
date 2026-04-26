@@ -1,0 +1,69 @@
+@startuml keypoints_explained
+
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam defaultFontSize 13
+skinparam rectangleBorderColor #888780
+skinparam rectangleBackgroundColor #F1EFE8
+skinparam noteBorderColor #B4B2A9
+skinparam noteBackgroundColor #FAEEDA
+
+title What MoveNet Gives You — Keypoints Explained
+
+rectangle "MoveNet Output (one frame)" as frame {
+
+  rectangle "Keypoint 0 — Nose" as nose #FAEEDA {
+    note as n0
+      x: 0.27  (27% from left edge)
+      y: 0.14  (14% from top edge)
+      conf: 0.96  (96% confident)
+    end note
+  }
+
+  rectangle "Keypoint 1 — Left Shoulder" as lshoulder #FAEEDA {
+    note as n1
+      x: 0.41
+      y: 0.31
+      conf: 0.94
+    end note
+  }
+
+  rectangle "... 15 more keypoints" as rest #E1F5EE {
+    note as n2
+      Right shoulder, elbows, wrists,
+      hips, knees, ankles
+      (eyes and ears also included)
+    end note
+  }
+}
+
+note bottom of frame
+  <b>Per frame math:</b>
+  17 keypoints × 3 values (x, y, conf) = <b>51 floats</b>
+
+  <b>Per window math:</b>
+  30 frames × 51 floats = <b>1,530 values → your 1D CNN input</b>
+end note
+
+note left of frame
+  <b>Body joints tracked:</b>
+  0  Nose
+  1  Left eye
+  2  Right eye
+  3  Left ear
+  4  Right ear
+  5  Left shoulder
+  6  Right shoulder
+  7  Left elbow
+  8  Right elbow
+  9  Left wrist
+  10 Right wrist
+  11 Left hip
+  12 Right hip
+  13 Left knee
+  14 Right knee
+  15 Left ankle
+  16 Right ankle
+end note
+
+@enduml

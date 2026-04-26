@@ -1,0 +1,57 @@
+@startuml pipeline_overview
+
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam defaultFontSize 13
+
+skinparam activity {
+  BackgroundColor #F1EFE8
+  BorderColor #888780
+  FontColor #2C2C2A
+  ArrowColor #888780
+}
+
+title Workout Coach — Full Pipeline
+
+start
+
+#E1F5EE:<color:#085041><b>Camera</b></color>
+<color:#0F6E56>RPi Camera Module 3</color>;
+note right
+  Raw frames (pixels)
+end note
+
+#E1F5EE:<color:#085041><b>Pose Estimation</b></color>
+<color:#0F6E56>MoveNet — Hailo NPU (pre-built)</color>;
+note right
+  17 keypoints per frame
+  (x, y, confidence) × 17 = 51 floats
+end note
+
+#EEEDFE:<color:#26215C><b>Windowing</b></color>
+<color:#534AB7>Ring buffer — 30 frames</color>;
+note right
+  30 frames × 51 floats
+  = 1,530 values per window
+end note
+
+#EEEDFE:<color:#26215C><b>1D CNN Classifier</b></color>
+<color:#534AB7>Your model — TFLite Micro</color>;
+note right
+  Exercise class + form score
+  (squat / push-up, good / bad)
+end note
+
+#FAECE7:<color:#4A1B0C><b>Output</b></color>
+<color:#993C1D>Rep count + form feedback</color>;
+
+stop
+
+legend right
+  | Color | Meaning |
+  | <#E1F5EE> | Pre-built (not your code) |
+  | <#EEEDFE> | Your code |
+  | <#FAECE7> | Output |
+endlegend
+
+@enduml

@@ -1,0 +1,43 @@
+@startuml training_vs_inference
+
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam defaultFontSize 13
+skinparam ArrowColor #888780
+skinparam componentBorderColor #888780
+
+title Training vs Inference — Two Separate Phases
+
+package "Training — your laptop" #F8F8F8 {
+
+  component "Labeled Dataset\n(your recorded reps)" as dataset #F1EFE8
+  component "Keras + TensorFlow\n(model architecture + training loop)" as keras #EEEDFE
+  component "INT8 Quantization\n(TFLite converter)" as quant #EEEDFE
+  component ".tflite model file\n(frozen weights)" as tflite_out #E1F5EE
+
+  dataset --> keras : training examples
+  keras --> quant : float32 model
+  quant --> tflite_out : compressed INT8 model
+}
+
+package "Inference — on device" #F0F8F0 {
+
+  component ".tflite loaded\n(read-only, frozen)" as tflite_in #E1F5EE
+  component "TFLite Micro runtime\n(no OS, no dynamic alloc)" as runtime #EEEDFE
+  component "1D CNN forward pass\n(matrix multiply + activations)" as cnn #EEEDFE
+  component "Prediction\n(exercise class + form score)" as output #FAECE7
+
+  tflite_in --> runtime : load weights
+  runtime --> cnn : live keypoint window
+  cnn --> output : class probabilities
+}
+
+tflite_out ..> tflite_in : <<deploy to device>>\ncopy once, run forever
+
+note bottom
+  Key insight: no learning happens on device.
+  Weights are fixed at deployment time.
+  Inference is purely deterministic forward computation.
+end note
+
+@enduml
